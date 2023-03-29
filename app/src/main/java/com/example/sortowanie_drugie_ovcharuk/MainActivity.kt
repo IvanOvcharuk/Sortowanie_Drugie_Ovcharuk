@@ -166,33 +166,28 @@ class MainActivity : AppCompatActivity() {
 
                 temp1 = System.currentTimeMillis()
                 for (i in 0..ilerazy.text.toString().toInt())
-                    wstawianie(losowa_lista)
+                    bruteForceSort(losowa_lista)
                 temp2 = System.currentTimeMillis()
-                wstawianie.text = Czas(temp1, temp2).toString() + " milisekund"
+                brute.text = Czas(temp1, temp2).toString() + " milisekund"
 
                 temp1 = System.currentTimeMillis()
                 for (i in 0..ilerazy.text.toString().toInt())
-                    babelkowe(losowa_lista)
+                    kmpSort(losowa_lista)
                 temp2 = System.currentTimeMillis()
-                babelkowe.text =Czas(temp1, temp2).toString() + " milisekund"
+                KMP.text =Czas(temp1, temp2).toString() + " milisekund"
 
                 temp1 = System.currentTimeMillis()
                 for (i in 0..ilerazy.text.toString().toInt())
-                    szybkie(losowa_lista, 0, losowa_lista.size - 1)
+                    boyerMooreSort(losowa_lista, 0, losowa_lista.size - 1)
                 temp2 = System.currentTimeMillis()
-                szybkie.text = Czas(temp1, temp2).toString() + " milisekund"
+                BM.text = Czas(temp1, temp2).toString() + " milisekund"
 
                 temp1 = System.currentTimeMillis()
                 for (i in 0..ilerazy.text.toString().toInt())
-                    heapsort(losowa_lista)
+                    rabinKarpSort(losowa_lista)
                 temp2 = System.currentTimeMillis()
-                heapsort.text =Czas(temp1, temp2).toString() + " milisekund"
+                RK.text =Czas(temp1, temp2).toString() + " milisekund"
 
-                temp1 = System.currentTimeMillis()
-                for (i in 0..ilerazy.text.toString().toInt())
-                    scalanie(losowa_lista.toIntArray())
-                temp2 = System.currentTimeMillis()
-                scalanie.text = Czas(temp1, temp2).toString() + " milisekund"
             }
             else
                 Toast.makeText(this, "Pola nie moga byc puste!", Toast.LENGTH_SHORT).show()
