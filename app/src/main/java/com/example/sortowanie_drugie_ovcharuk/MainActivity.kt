@@ -124,34 +124,37 @@ class MainActivity : AppCompatActivity() {
 
         //R-B
 
-        fun isPrime(n: Int): Boolean {
-            if (n <= 1) return false
-            for (i in 2 until n) {
-                if (n % i == 0) return false
+        fun rabinKarpSort(arr: IntArray) {
+            val n = arr.size
+            if (n <= 1) return
+
+            val bucketSize = 10 // rozmiar kubełka
+            val buckets = Array(bucketSize) { mutableListOf<Int>() }
+
+            // wyznaczenie wartości maksymalnej i obliczenie liczby cyfr w każdej liczbie
+            var maxVal = arr[0]
+            for (i in 1 until n) {
+                if (arr[i] > maxVal) {
+                    maxVal = arr[i]
+                }
             }
-            return true
-        }
-        fun nextPrime(n: Int): Int {
-            var i = n
-            while (!isPrime(i)) {
-                i++
-            }
-            return i
-        }
-        fun rabinKarpSort(array: IntArray) {
-            val n = array.size
-            val maxVal = array.maxOrNull() ?: 0
-            val q = nextPrime(maxVal + 1)
+            val numDigits = (Math.log10(maxVal.toDouble()) + 1).toInt()
 
-            // Compute hash value for each element
-            val hashValues = IntArray(n) { i -> (array[i] * q) % n }
-
-            // Sort the elements based on their hash values
-            val sortedArray = array.sortedWith(compareBy({ hashValues[it] }, { it }))
-
-            // Update the original array with the sorted elements
-            for (i in 0 until n) {
-                array[i] = sortedArray[i]
+            // sortowanie kubełkowe z wykorzystaniem hashowania
+            var exp = 1
+            for (i in 0 until numDigits) {
+                for (j in 0 until n) {
+                    val index = (arr[j] / exp) % bucketSize
+                    buckets[index].add(arr[j])
+                }
+                var pos = 0
+                for (j in 0 until bucketSize) {
+                    for (k in 0 until buckets[j].size) {
+                        arr[pos++] = buckets[j][k]
+                    }
+                    buckets[j].clear()
+                }
+                exp *= bucketSize
             }
         }
 
@@ -171,7 +174,7 @@ class MainActivity : AppCompatActivity() {
                     losowa_lista.addAll(sortedArray.toList())
                 }
                 temp2 = System.currentTimeMillis()
-                brute.text = "Czas: ${Czas(temp1, temp2)} ms\nWynik: ${losowa_lista.joinToString(", ")}"
+                brute.text =Czas(temp1, temp2).toString() + " milisekund"
 
                 temp1 = System.currentTimeMillis()
                 for (i in 0..ilerazy.text.toString().toInt())
