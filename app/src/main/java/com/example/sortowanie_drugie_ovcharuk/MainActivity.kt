@@ -9,11 +9,10 @@ import android.widget.Toast
 import java.util.*
 
 class MainActivity : AppCompatActivity() {
-    private lateinit var wstawianie: TextView
-    private lateinit var babelkowe: TextView
-    private lateinit var heapsort: TextView
-    private lateinit var scalanie: TextView
-    private lateinit var szybkie: TextView
+    private lateinit var brute: TextView
+    private lateinit var KMP: TextView
+    private lateinit var BM: TextView
+    private lateinit var RK: TextView
     private lateinit var wykonaj: Button
     private lateinit var ilerazy: EditText
     private lateinit var ileelementow: EditText
@@ -21,11 +20,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        wstawianie = findViewById(R.id.brute)
-        babelkowe = findViewById(R.id.KMP)
-        heapsort = findViewById(R.id.BM)
-        scalanie = findViewById(R.id.RK)
-        szybkie = findViewById(R.id.szybkie)
+        brute = findViewById(R.id.brute)
+        KMP = findViewById(R.id.KMP)
+        BM = findViewById(R.id.BM)
+        RK = findViewById(R.id.RK)
         wykonaj = findViewById(R.id.wykonaj)
         ilerazy = findViewById(R.id.ilerazy)
         ileelementow = findViewById(R.id.ileelementow)
@@ -57,6 +55,7 @@ class MainActivity : AppCompatActivity() {
             }
             return arr
         }
+
         //KMP
         fun kmpSort(arr: IntArray) {
             val n = arr.size
@@ -103,98 +102,61 @@ class MainActivity : AppCompatActivity() {
                 m /= 10
             }
         }
-        //Szybkie
-        fun partition(array: MutableList<Int>, low: Int, high: Int): Int {
-            val pivot = array[high]
-            var i = low - 1
-            for (j in low until high) {
-                if (array[j] <= pivot) {
-                    i++
-                    val temp = array[i]
-                    array[i] = array[j]
-                    array[j] = temp
+        //B-M
+        fun boyerMooreSort(array: IntArray) {
+            val n = array.size
+            val maxVal = array.maxOrNull() ?: 0
+            val buckets = IntArray(maxVal + 1)
+
+            // Fill the buckets with the frequency of each value
+            for (i in 0 until n) {
+                buckets[array[i]]++
+            }
+
+            // Update the values in the array based on the bucket frequency
+            var i = 0
+            for (j in 0..maxVal) {
+                repeat(buckets[j]) {
+                    array[i++] = j
                 }
             }
-            val temp = array[i + 1]
-            array[i + 1] = array[high]
-            array[high] = temp
-            return i + 1
         }
 
-        fun szybkie(array: MutableList<Int>, low: Int, high: Int) {
-            if (low < high) {
-                val pivot = partition(array, low, high)
-                szybkie(array, low, pivot - 1)
-                szybkie(array, pivot + 1, high)
+        //R-B
+
+        fun isPrime(n: Int): Boolean {
+            if (n <= 1) return false
+            for (i in 2 until n) {
+                if (n % i == 0) return false
             }
+            return true
         }
-
-        //Heapsort
-        fun heapify(array: MutableList<Int>, n: Int, i: Int) {
-            var largest = i
-            val l = 2 * i + 1
-            val r = 2 * i + 2
-
-            if (l < n && array[l] > array[largest]) {
-                largest = l
+        fun nextPrime(n: Int): Int {
+            var i = n
+            while (!isPrime(i)) {
+                i++
             }
-
-            if (r < n && array[r] > array[largest]) {
-                largest = r
-            }
-
-            if (largest != i) {
-                val temp = array[i]
-                array[i] = array[largest]
-                array[largest] = temp
-
-                heapify(array, n, largest)
-            }
+            return i
         }
+        fun rabinKarpSort(array: IntArray) {
+            val n = array.size
+            val maxVal = array.maxOrNull() ?: 0
+            val q = nextPrime(maxVal + 1)
 
-        fun heapsort(array: MutableList<Int>) {
-            for (i in array.size / 2 - 1 downTo 0) {
-                heapify(array, array.size, i)
-            }
+            // Compute hash value for each element
+            val hashValues = IntArray(n) { i -> (array[i] * q) % n }
 
-            for (i in array.size - 1 downTo 0) {
-                val temp = array[0]
-                array[0] = array[i]
-                array[i] = temp
+            // Sort the elements based on their hash values
+            val sortedArray = array.sortedWith(compareBy({ hashValues[it] }, { it }))
 
-                heapify(array, i, 0)
+            // Update the original array with the sorted elements
+            for (i in 0 until n) {
+                array[i] = sortedArray[i]
             }
         }
 
-        //Scalanie
-        fun merge(left: IntArray, right: IntArray): IntArray {
-            var leftIndex = 0
-            var rightIndex = 0
-            val result = IntArray(left.size + right.size)
 
-            for (i in result.indices) {
-                if (leftIndex >= left.size) {
-                    result[i] = right[rightIndex++]
-                } else if (rightIndex >= right.size) {
-                    result[i] = left[leftIndex++]
-                } else if (left[leftIndex] < right[rightIndex]) {
-                    result[i] = left[leftIndex++]
-                } else {
-                    result[i] = right[rightIndex++]
-                }
-            }
 
-            return result
-        }
-        fun scalanie(array: IntArray): IntArray {
-            if (array.size <= 1) return array
-
-            val mid = array.size / 2
-            val left = scalanie(array.copyOfRange(0, mid))
-            val right = scalanie(array.copyOfRange(mid, array.size))
-
-            return merge(left, right)
-        }
         wykonaj.setOnClickListener {
             if (ilerazy.text.isNotEmpty() && ileelementow.text.isNotEmpty())
             {
