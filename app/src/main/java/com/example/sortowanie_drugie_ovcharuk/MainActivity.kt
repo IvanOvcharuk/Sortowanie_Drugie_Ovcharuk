@@ -165,26 +165,29 @@ class MainActivity : AppCompatActivity() {
                 var temp1 : Long; var temp2 : Long
 
                 temp1 = System.currentTimeMillis()
-                for (i in 0..ilerazy.text.toString().toInt())
-                    bruteForceSort(losowa_lista)
+                for (i in 0..ilerazy.text.toString().toInt()) {
+                    val sortedArray = bruteForceSort(losowa_lista.toIntArray())
+                    losowa_lista.clear()
+                    losowa_lista.addAll(sortedArray.toList())
+                }
                 temp2 = System.currentTimeMillis()
-                brute.text = Czas(temp1, temp2).toString() + " milisekund"
+                brute.text = "Czas: ${Czas(temp1, temp2)} ms\nWynik: ${losowa_lista.joinToString(", ")}"
 
                 temp1 = System.currentTimeMillis()
                 for (i in 0..ilerazy.text.toString().toInt())
-                    kmpSort(losowa_lista)
+                    kmpSort(losowa_lista.toIntArray())
                 temp2 = System.currentTimeMillis()
                 KMP.text =Czas(temp1, temp2).toString() + " milisekund"
 
                 temp1 = System.currentTimeMillis()
                 for (i in 0..ilerazy.text.toString().toInt())
-                    boyerMooreSort(losowa_lista, 0, losowa_lista.size - 1)
+                    boyerMooreSort(losowa_lista.toIntArray())
                 temp2 = System.currentTimeMillis()
                 BM.text = Czas(temp1, temp2).toString() + " milisekund"
 
                 temp1 = System.currentTimeMillis()
                 for (i in 0..ilerazy.text.toString().toInt())
-                    rabinKarpSort(losowa_lista)
+                    rabinKarpSort(losowa_lista.toIntArray())
                 temp2 = System.currentTimeMillis()
                 RK.text =Czas(temp1, temp2).toString() + " milisekund"
 
